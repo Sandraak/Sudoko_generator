@@ -1,59 +1,41 @@
 use rand::Rng;
 use std::{self, vec};
 
+//Rust doesn't have a sqrt function for integers / usize
 const NR_OF_COL_AS_FLOAT: f32 = 9.0;
 const NR_OF_COL: usize = NR_OF_COL_AS_FLOAT as usize;
 
-static mut SUCCES: bool = true;
-static mut FINISHED: bool = false;
-static mut WIPE_COUNT: u128 = 0;
-
 fn main() {
+    generate_filled_soduko();
+}
+
+fn generate_filled_soduko(){
+    let mut nr_of_tries: u128 = 1;
+    let mut succes = true;
     let mut matrix = vec![0; NR_OF_COL.pow(2)];
 
-    // for n in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
-    //     println!("n = {}",n);
-    //     fill_diagonal_mini_matrix(n * NR_OF_COL_AS_FLOAT.sqrt() as usize, &mut matrix);
-    // }
-
-    // print_matrix(&matrix);
-
-    unsafe {
-        while !FINISHED {
-            fill_all(&mut matrix);
-            if !SUCCES {
-                wipe_all(&mut matrix);
-                SUCCES = true;
+    loop {
+        if !succes {
+            nr_of_tries += 1;
+            wipe_all(&mut matrix);
+            succes = true;
+        } else {
+            if fill_all(&mut matrix).is_err() {
+                succes = false
             } else {
-                FINISHED = true;
+                break;
             }
         }
     }
-unsafe{
-    println!("Generated in {} tries", WIPE_COUNT);
-}
+    println!("    Generated in {} tries", nr_of_tries);
     print_matrix(&matrix);
 }
 
-// fn fill_diagonal_mini_matrix(n: usize, matrix: &mut Vec<u8>) -> &mut Vec<u8> {
-//     let mut used_numbers: Vec<u8> = Vec::new();
-//     for row in n..n + NR_OF_COL_AS_FLOAT.sqrt() as usize {
-//         for col in n..n + NR_OF_COL_AS_FLOAT.sqrt() as usize {
-//             let mut valid: bool = false;
-//             while !valid {
-//                 let number = generate_number();
-//                 if check_valid(&used_numbers, number) {
-//                     matrix[(row * NR_OF_COL) + col] = number;
-//                     used_numbers.push(number);
-//                     valid = true;
-//                 }
-//             }
-//         }
-//     }
-//     matrix
-// }
-
-fn fill_mini_matrix(start_row: usize, start_col: usize, matrix: &mut Vec<u8>) -> &mut Vec<u8> {
+fn fill_mini_matrix(
+    start_row: usize,
+    start_col: usize,
+    matrix: &mut Vec<u8>,
+) -> Result<&mut Vec<u8>, bool> {
     let mut used_numbers_matrix: Vec<u8> = Vec::new();
     let mut used_numbers_row: Vec<u8> = Vec::new();
     let mut used_numbers_col: Vec<u8> = Vec::new();
@@ -76,14 +58,6 @@ fn fill_mini_matrix(start_row: usize, start_col: usize, matrix: &mut Vec<u8>) ->
                 }
             }
 
-            // println!(
-            //     "invalid numbers row {}: {:?}",
-            //     current_row, used_numbers_row
-            // );
-            // println!("invalid numbers col {}:{:?}", current_col, used_numbers_col);
-            // println!("invalid numbers matrix: {:?}", used_numbers_matrix);
-            // println!("===================== \n");
-
             let mut valid: bool = false;
             while !valid {
                 let number = generate_number();
@@ -94,76 +68,22 @@ fn fill_mini_matrix(start_row: usize, start_col: usize, matrix: &mut Vec<u8>) ->
                         &used_numbers_col,
                         &used_numbers_matrix,
                     ) {
-                        // println!(
-                        //     " NO MORE NUMBERS current_row: {} current_col: {} actual_nr: {}",
-                        //     current_row,
-                        //     current_col,
-                        //     (current_row * NR_OF_COL) + current_col
-                        // );
-
-                        println!("NO MORE AVAILABLE NUMBERS");
-                        unsafe {
-                            SUCCES = false;
-                        }
-                        // println!(" GEEN NUMMERS MEER BESCHIKBAAR");
-                        break;
-                        //  wipe_mini_matrix(start_row, start_col, matrix);
-                        //  fill_mini_matrix(start_row, start_col, matrix);
-                        //return matrix;
-                        // break;
+                        return Err(false);
                     }
 
                     if check_valid(&used_numbers_matrix, number)
                         && check_valid(&used_numbers_row, number)
                         && check_valid(&used_numbers_col, number)
                     {
-                        println!("value: {}", number);
-                        println!(
-                            "current_row: {} current_col: {} actual_nr: {}",
-                            current_row,
-                            current_col,
-                            (current_row * NR_OF_COL) + current_col
-                        );
                         matrix[(current_row * NR_OF_COL) + current_col] = number;
                         used_numbers_matrix.push(number);
-                        println!("invalid numbers row: {:?}", used_numbers_row);
-                        println!("invalid numbers col: {:?}", used_numbers_col);
-                        println!("invalid numbers matrix: {:?}", used_numbers_matrix);
-                        println!("===================== \n");
                         valid = true;
                     }
-                    // if used_numbers_matrix.len() != NR_OF_COL {
-                    //     if no_available_numbers(
-                    //         &used_numbers_row,
-                    //         &used_numbers_col,
-                    //         &used_numbers_matrix,
-                    //     ) {
-                    //         // println!(
-                    //         //     " NO MORE NUMBERS current_row: {} current_col: {} actual_nr: {}",
-                    //         //     current_row,
-                    //         //     current_col,
-                    //         //     (current_row * NR_OF_COL) + current_col
-                    //         // );
-
-                    //         println!("NO MORE AVAILABLE NUMBERS");
-                    //         unsafe {
-                    //             SUCCES = false;
-                    //         }
-                    //         // println!(" GEEN NUMMERS MEER BESCHIKBAAR");
-                    //         break;
-                    //         //  wipe_mini_matrix(start_row, start_col, matrix);
-                    //         //  fill_mini_matrix(start_row, start_col, matrix);
-                    //         //return matrix;
-                    //         // break;
-                    //     }
                 }
-                //check whether number 1-9 are no longer valid
             }
         }
     }
-    //   drop(used_numbers);
-    print_matrix(&matrix);
-    matrix
+    Ok(matrix)
 }
 
 fn generate_number() -> u8 {
@@ -201,103 +121,33 @@ fn wipe_mini_matrix(start_row: usize, start_col: usize, matrix: &mut Vec<u8>) ->
             matrix[(current_row * NR_OF_COL) + current_col] = 0;
         }
     }
-    // println!("WIPE");
-    // print_matrix(matrix);
     matrix
 }
 
-fn fill_all(matrix: &mut Vec<u8>) -> &mut Vec<u8> {
-    /*
-    4x4
-     */
-    // fill_mini_matrix(0, 0, matrix);
-    // fill_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize, matrix);
-    // fill_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize, 0, matrix);
-    // fill_mini_matrix(
-    //     NR_OF_COL_AS_FLOAT.sqrt() as usize,
-    //     NR_OF_COL_AS_FLOAT.sqrt() as usize,
-    //     matrix,
-    // );
+fn fill_all(matrix: &mut Vec<u8>) -> Result<&mut Vec<u8>, bool> {
+    for matrices_in_row in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
+        for matrices_in_col in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize{
+            fill_mini_matrix(
+                matrices_in_row * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrices_in_col * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrix,
+            )?;
+        }
+    }
 
-    // 9x9
-    fill_mini_matrix(0, 0, matrix); //diagonal
-    fill_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize, matrix);
-    fill_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize * 2, matrix);
-
-    fill_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize, 0, matrix);
-    fill_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        matrix,
-    );
-    fill_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        matrix,
-    ); //diagonal
-
-    fill_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize * 2, 0, matrix);
-    fill_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        matrix,
-    );
-    fill_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        matrix,
-    );
-    matrix
+    Ok(matrix)
 }
 
 fn wipe_all(matrix: &mut Vec<u8>) -> &mut Vec<u8> {
-    /*
-    4x4
-    */
-    // wipe_mini_matrix(0, 0, matrix);
-    // wipe_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize, matrix);
-    // wipe_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize, 0, matrix);
-    // wipe_mini_matrix(
-    //     NR_OF_COL_AS_FLOAT.sqrt() as usize,
-    //     NR_OF_COL_AS_FLOAT.sqrt() as usize,
-    //     matrix,
-    // );
-
-    //9x9
-    wipe_mini_matrix(0, 0, matrix);
-    wipe_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize, matrix);
-    wipe_mini_matrix(0, NR_OF_COL_AS_FLOAT.sqrt() as usize * 2, matrix);
-
-    wipe_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize, 0, matrix);
-    wipe_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        matrix,
-    );
-    wipe_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        matrix,
-    );
-
-    wipe_mini_matrix(NR_OF_COL_AS_FLOAT.sqrt() as usize * 2, 0, matrix);
-    wipe_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize,
-        matrix,
-    );
-    wipe_mini_matrix(
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        NR_OF_COL_AS_FLOAT.sqrt() as usize * 2,
-        matrix,
-    );
-
-    println!("==================WIPE===========================");
-    unsafe {
-        WIPE_COUNT += 1;
-        println!("nr of tries: {} ", WIPE_COUNT);
+    for matrices_in_row in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
+        for matrices_in_col in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
+            wipe_mini_matrix(
+                matrices_in_row * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrices_in_col * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrix,
+            );
+        }
     }
-    // print_matrix(matrix);
     matrix
 }
 
@@ -315,5 +165,5 @@ fn print_matrix(matrix: &Vec<u8>) {
         }
         println!(" ");
     }
-    println!("============ end of matrix ===============")
+    println!("\n ============ end of matrix =============== \n")
 }
