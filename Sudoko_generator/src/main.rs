@@ -7,56 +7,6 @@ const PERCENTAGE_HIDDEN: f32 = 70.0;
 
 const NR_OF_COL: usize = NR_OF_COL_AS_FLOAT as usize;
 
-struct Sudoku {
-    sudoku: Vec<MiniMatrix>,
-}
-
-struct MiniMatrix {
-    minimatrix: Vec<u8>,
-}
-
-impl Sudoku {
-    fn generate() -> Self {
-        let mut nr_of_tries: u128 = 1;
-        let mut succes = true;
-        let mut sudoku = MiniMatrix { minimatrix: vec![0; NR_OF_COL.pow(2)] };
-
-        loop {
-            if !succes {
-                nr_of_tries += 1;
-                Sudoku::wipe_all();
-                succes = true;
-            } else {
-                if fill_all(&mut sudoku).is_err() {
-                    succes = false
-                } else {
-                    break;
-                }
-            }
-        }
-        println!("\n \n Sudoko was generated in {} tries", nr_of_tries);
-        Sudoku { sudoku }
-    }
-
-    fn wipe_all(&mut self) {
-        for matrices_in_row in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
-            for matrices_in_col in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
-                wipe_mini_matrix(
-                    matrices_in_row * NR_OF_COL_AS_FLOAT.sqrt() as usize,
-                    matrices_in_col * NR_OF_COL_AS_FLOAT.sqrt() as usize,
-                    matrix,
-                );
-            }
-        }
-    }
-}
-
-impl MiniMatrix {
-    fn 
-    
-}
-
-
 fn main() {
     let solution = generate_solution();
     generate_sudoku(&solution, PERCENTAGE_HIDDEN);
@@ -77,27 +27,27 @@ fn generate_sudoku(solution: &Vec<u8>, percentage_hidden: f32) {
     print_matrix(&solution);
 }
 
-// fn generate_solution() -> Vec<u8> {
-//     let mut nr_of_tries: u128 = 1;
-//     let mut succes = true;
-//     let mut matrix = vec![0; NR_OF_COL.pow(2)];
+fn generate_solution() -> Vec<u8> {
+    let mut nr_of_tries: u128 = 1;
+    let mut succes = true;
+    let mut matrix = vec![0; NR_OF_COL.pow(2)];
 
-//     loop {
-//         if !succes {
-//             nr_of_tries += 1;
-//             wipe_all(&mut matrix);
-//             succes = true;
-//         } else {
-//             if fill_all(&mut matrix).is_err() {
-//                 succes = false
-//             } else {
-//                 break;
-//             }
-//         }
-//     }
-//     println!("\n \n Sudoko was generated in {} tries", nr_of_tries);
-//     matrix
-// }
+    loop {
+        if !succes {
+            nr_of_tries += 1;
+            wipe_all(&mut matrix);
+            succes = true;
+        } else {
+            if fill_all(&mut matrix).is_err() {
+                succes = false
+            } else {
+                break;
+            }
+        }
+    }
+    println!("\n \n Sudoko was generated in {} tries", nr_of_tries);
+    matrix
+}
 
 fn fill_mini_matrix(
     start_row: usize,
@@ -155,7 +105,7 @@ fn fill_mini_matrix(
 
 fn generate_number(low: u8, high: u8) -> u8 {
     let mut rng = rand::thread_rng();
-    let number = rng.gen_range(low, high);
+    let number = rng.gen_range(low..high);
     number
 }
 
@@ -201,21 +151,22 @@ fn fill_all(matrix: &mut Vec<u8>) -> Result<&mut Vec<u8>, bool> {
             )?;
         }
     }
+
     Ok(matrix)
 }
 
-// fn wipe_all(matrix: &mut Vec<u8>) -> &mut Vec<u8> {
-//     for matrices_in_row in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
-//         for matrices_in_col in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
-//             wipe_mini_matrix(
-//                 matrices_in_row * NR_OF_COL_AS_FLOAT.sqrt() as usize,
-//                 matrices_in_col * NR_OF_COL_AS_FLOAT.sqrt() as usize,
-//                 matrix,
-//             );
-//         }
-//     }
-//     matrix
-// }
+fn wipe_all(matrix: &mut Vec<u8>) -> &mut Vec<u8> {
+    for matrices_in_row in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
+        for matrices_in_col in 0..NR_OF_COL_AS_FLOAT.sqrt() as usize {
+            wipe_mini_matrix(
+                matrices_in_row * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrices_in_col * NR_OF_COL_AS_FLOAT.sqrt() as usize,
+                matrix,
+            );
+        }
+    }
+    matrix
+}
 
 fn print_matrix(matrix: &Vec<u8>) {
     for row in 0..NR_OF_COL {
