@@ -1,36 +1,49 @@
 use rand::Rng;
-use std::{self, vec, ops::{Index, IndexMut}};
+use std::{
+    self,
+    ops::{Index, IndexMut},
+    vec,
+};
 
 const NR_OF_COL: usize = 9;
 const NR_OF_COL_MM: usize = NR_OF_COL / 3;
-const NR_OF_MM : usize = NR_OF_COL_MM;
-const NR_OF_VALUES : usize = NR_OF_COL.pow(2);
-const NR_OF_VALUES_MM : usize = NR_OF_COL;
-
-///Ik wil graag een trait maken voor het printen op verschillende manieren. Dit is cooler als ik ook verschillende structs heb en niet gewoon 1 sudoko.
-/// Vandaar de struct minimatrix, een sudoko is hier uit opgebouwd. Maybe heb ik hierdoor ook een kans/reden om generic types te gebruiken?
+const NR_OF_MM: usize = NR_OF_COL_MM;
+const NR_OF_VALUES: usize = NR_OF_COL.pow(2);
+const NR_OF_VALUES_MM: usize = NR_OF_COL;
 pub struct Sudoku {
     sudoku: Vec<MiniMatrix>,
-    // sudoku2: Vec<Vec<u8>>
 }
 //Deze kan uiteindelijk op private
 #[derive(Clone, Debug)]
 pub struct MiniMatrix {
     minimatrix: Vec<u8>,
-    //  minimatrix: [u8; 9],
 }
- pub trait Matrix {
+pub trait Matrix {
     fn generate_blank() -> Self;
-    fn generate_with_stub_data(start_value : usize) -> Self;
+    fn generate_with_stub_data(start_value: usize) -> Self;
     fn print(&self);
+    fn checkvalid(&self, number: u8) -> bool;
 }
 
 impl Sudoku {
-    fn check
+    fn check_row(&self, row_index: usize, number_to_be_checked: u8) -> bool {
+            self.sudoku[row_index].contains(number_to_be_checked)
+    }
+    fn check_col(&self, col_index: usize, number_to_be_checked: u8) -> bool {
+        for row in 0..NR_OF_COL {
+            if self.sudoku[row][col_index] == number_to_be_checked {
+                return false
+            }
+        }
+        true
+    }
 }
 
 /// Can also be rows or columns
 impl MiniMatrix {
+    fn contains(&self, number :u8) -> bool{
+        self.minimatrix.contains(&number)
+    }
 }
 
 impl Index<usize> for MiniMatrix {
@@ -40,11 +53,24 @@ impl Index<usize> for MiniMatrix {
     }
 }
 
-impl IndexMut<usize> for MiniMatrix{
+impl IndexMut<usize> for MiniMatrix {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.minimatrix[index]
     }
 }
+
+
+// impl Range<usize> for MiniMatrix{
+// }
+
+// impl RangeBounds<usize> for MiniMatrix {
+//     fn start_bound(&self) -> Bound<&usize> {
+//         Included(self.start)
+//      }
+//     fn end_bound(&self) -> Bound<&usize> {
+//         Excluded(self.minimatrix)
+//      }
+// }
 
 impl Matrix for MiniMatrix {
     fn generate_blank() -> Self {
@@ -52,9 +78,9 @@ impl Matrix for MiniMatrix {
         MiniMatrix { minimatrix }
     }
 
-    fn generate_with_stub_data(start_value : usize) -> Self{
-        let mut minimatrix :Vec<u8> = Vec::new();
-        for i in start_value..start_value + NR_OF_VALUES_MM{
+    fn generate_with_stub_data(start_value: usize) -> Self {
+        let mut minimatrix: Vec<u8> = Vec::new();
+        for i in start_value..start_value + NR_OF_VALUES_MM {
             minimatrix.push(i.try_into().unwrap());
         }
         MiniMatrix { minimatrix }
@@ -68,6 +94,9 @@ impl Matrix for MiniMatrix {
             println!(" ");
         }
         println!(" ");
+    }
+    fn checkvalid(&self, number: u8) -> bool {
+        true
     }
 }
 
@@ -85,16 +114,16 @@ impl Matrix for Sudoku {
         Sudoku { sudoku }
     }
 
-    fn generate_with_stub_data(start_value : usize) -> Self{
+    fn generate_with_stub_data(start_value: usize) -> Self {
         // let mut vec = vec![vec!['#'; 80]; 24];
         let row = MiniMatrix::generate_blank();
-        let mut sudoku :Vec<MiniMatrix> = vec![row;NR_OF_COL];
+        let mut sudoku: Vec<MiniMatrix> = vec![row; NR_OF_COL];
         let mut counter = 0;
 
-        for row in start_value..start_value+NR_OF_COL{
-            for col in start_value..start_value+NR_OF_COL{
+        for row in start_value..start_value + NR_OF_COL {
+            for col in start_value..start_value + NR_OF_COL {
                 sudoku[row][col] = counter;
-                counter+= 1;
+                counter += 1;
             }
         }
         Sudoku { sudoku }
@@ -107,12 +136,15 @@ impl Matrix for Sudoku {
             }
             for col in 0..NR_OF_COL {
                 if col % NR_OF_COL_MM == 0 {
-                print!(" ");
+                    print!(" ");
                 }
                 print!(" {} ", self.sudoku[row][col]);
             }
-            println!(" "); 
+            println!(" ");
         }
+    }
+    fn checkvalid(&self, number: u8) -> bool {
+        true
     }
 }
 
@@ -122,8 +154,8 @@ fn main() {
     println!("======================");
 
     //  let sudoko = Sudoku::generate_with_stub_data(0);
-    let sudoko = Sudoku::generate_blank();
-    sudoko.print();
+    let sudoku = Sudoku::generate_blank();
+    sudoku.print();
 
     // minimatrix.print();
     // minimatrix.print_as_row();

@@ -2,7 +2,6 @@ use crate::sudoku_generator::{Matrix, Sudoku};
 
 mod sudoku_generator;
 
-
 fn main() {
     let minimatrix = sudoku_generator::MiniMatrix::generate_with_stub_data(0);
     minimatrix.print();
