@@ -25,45 +25,12 @@ pub struct MiniMatrix {
     fn print(&self);
 }
 
-impl Sudoku {}
+impl Sudoku {
+    fn check
+}
 
 /// Can also be rows or columns
 impl MiniMatrix {
-    // fn print_as_row(&self){
-    //     for i in 0..NR_OF_VALUES_MM {
-    //         if i % NR_OF_COL_MM == 0{
-    //             print!("  ");
-    //         }
-    //         print!(" {} " , self.minimatrix[i]);
-    //     }
-    //     println!(" ");
-    // }
-
-    // fn print_as_col(&self){
-    //     for i in 0..NR_OF_VALUES_MM {
-    //         if i % NR_OF_COL_MM == 0{
-    //             println!(" ");
-    //         }
-    //         println!(" {} ", self.minimatrix[i]);
-    //     }
-    // }
-
-    // fn return_as_part_of_row(&self, start_index : usize ) -> Vec<u8>{
-    //     let mut part_of_row :Vec<u8> = Vec::new();
-    //     for current_index in start_index..start_index + NR_OF_COL_MM {
-    //         part_of_row.push(self.minimatrix[current_index]);
-    //     }
-    //     part_of_row
-    // }
-
-    // fn return_as_part_of_col(&self, start_index : usize) -> Vec<u8> {
-    //     let mut part_of_col : Vec<u8> = Vec::new();
-    //     for current_index in start_index..start_index + NR_OF_COL_MM {
-    //         part_of_col.push(self.minimatrix[current_index * NR_OF_COL_MM]);
-
-    //     }
-    //     part_of_col
-    // }
 }
 
 impl Index<usize> for MiniMatrix {

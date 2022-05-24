@@ -1,1 +1,1 @@
-/home/sandra/Documents/Sudoko_generator_2/target/debug/Sudoko_generator_2: /home/sandra/Documents/Sudoko_generator_2/src/main.rs /home/sandra/Documents/Sudoko_generator_2/src/sudoku_generator.rs
+/home/sandra/Documents/workspace/Sudoko_generator/Sudoko_generator_2/target/debug/Sudoko_generator_2: /home/sandra/Documents/workspace/Sudoko_generator/Sudoko_generator_2/src/main.rs /home/sandra/Documents/workspace/Sudoko_generator/Sudoko_generator_2/src/sudoku_generator.rs
