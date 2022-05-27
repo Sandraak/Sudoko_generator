@@ -59,19 +59,6 @@ impl IndexMut<usize> for MiniMatrix {
     }
 }
 
-
-// impl Range<usize> for MiniMatrix{
-// }
-
-// impl RangeBounds<usize> for MiniMatrix {
-//     fn start_bound(&self) -> Bound<&usize> {
-//         Included(self.start)
-//      }
-//     fn end_bound(&self) -> Bound<&usize> {
-//         Excluded(self.minimatrix)
-//      }
-// }
-
 impl Matrix for MiniMatrix {
     fn generate_blank() -> Self {
         let minimatrix = vec![0; NR_OF_VALUES_MM];
@@ -143,24 +130,25 @@ impl Matrix for Sudoku {
             println!(" ");
         }
     }
+    
     fn checkvalid(&self, number: u8) -> bool {
         true
     }
 }
 
-fn main() {
-    let minimatrix = MiniMatrix::generate_with_stub_data(0);
-    minimatrix.print();
-    println!("======================");
+// fn main() {
+//     let minimatrix = MiniMatrix::generate_with_stub_data(0);
+//     minimatrix.print();
+//     println!("======================");
 
-    //  let sudoko = Sudoku::generate_with_stub_data(0);
-    let sudoku = Sudoku::generate_blank();
-    sudoku.print();
+//     //  let sudoko = Sudoku::generate_with_stub_data(0);
+//     let sudoku = Sudoku::generate_blank();
+//     sudoku.print();
 
-    // minimatrix.print();
-    // minimatrix.print_as_row();
-    // minimatrix.print_as_col();
+//     // minimatrix.print();
+//     // minimatrix.print_as_row();
+//     // minimatrix.print_as_col();
 
-    // let sudoku = Sudoku::generate_blank();
-    // sudoku.print();
-}
+//     // let sudoku = Sudoku::generate_blank();
+//     // sudoku.print();
+// }
