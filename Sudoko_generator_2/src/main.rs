@@ -3,12 +3,12 @@ use crate::sudoku_generator::{Matrix, Sudoku};
 mod sudoku_generator;
 
 fn main() {
-    let minimatrix = sudoku_generator::MiniMatrix::generate_with_stub_data(0);
+    let minimatrix = sudoku_generator::MiniMatrix::generate(0,0);
     minimatrix.print();
     println!("======================");
 
     //  let sudoko = Sudoku::generate_with_stub_data(0);
-    let sudoko = Sudoku::generate_blank();
+    let sudoko = Sudoku::generate(0,0);
     sudoko.print();
 
     // minimatrix.print();
