@@ -1,20 +1,17 @@
-use crate::sudoku_generator::{Matrix, Sudoku};
+use crate::sudoku_generator::{Matrix, MiniMatrix, Sudoku};
+
+use core::result::Result;
 
 mod sudoku_generator;
 
 fn main() {
-    let minimatrix = sudoku_generator::MiniMatrix::generate(0,0);
-    minimatrix.print();
-    println!("======================");
-
-    //  let sudoko = Sudoku::generate_with_stub_data(0);
-    let sudoko = Sudoku::generate(0,0);
-    sudoko.print();
-
+    // let mut sudoku = Sudoku::default();
+    // sudoku_generator::MiniMatrix::generate(sudoku, 0,0);
     // minimatrix.print();
-    // minimatrix.print_as_row();
-    // minimatrix.print_as_col();
+    println!("======================");
+    Sudoku::generate(Sudoku::default(), 0, 0);
+    // MiniMatrix::generate(Sudoku::default(), 0, 0);
+    // sudoko.print();
 
-    // let sudoku = Sudoku::generate_blank();
-    // sudoku.print();
+    // Ok(())
 }
